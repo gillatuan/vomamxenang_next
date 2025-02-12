@@ -1,8 +1,7 @@
 import { LOGIN_MUTATION } from "@/graphql/mutations";
 import client from "@/lib/apollo.client";
-import dayjs, { ManipulateType } from "dayjs";
+import dayjs from "dayjs";
 import { AuthOptions } from "next-auth";
-import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 
@@ -65,23 +64,23 @@ export const authOptions: AuthOptions = {
         },
       },
       async authorize(credentials) {
-          const { data, errors } = await client.mutate({
-            mutation: LOGIN_MUTATION,
-            variables: {
-              loginInput: {
-                email: credentials?.username,
-                password: credentials?.password,
-              },
+        const { data, errors } = await client.mutate({
+          mutation: LOGIN_MUTATION,
+          variables: {
+            loginInput: {
+              email: credentials?.username,
+              password: credentials?.password,
             },
-          });
+          },
+        });
 
-          if (data.login) {
-            return data.login;
-          }
+        if (data.login) {
+          return data.login;
+        }
 
-          if (errors) {
-            throw new Error(errors[0].message as string)
-          }
+        if (errors) {
+          throw new Error(errors[0].message as string);
+        }
       },
     }),
     GithubProvider({
@@ -121,10 +120,7 @@ export const authOptions: AuthOptions = {
         token.refresh_token = user.refresh_token;
         token.user = user.user;
         token.access_expire = dayjs(new Date())
-          .add(
-            +(process.env.TOKEN_EXPIRE_NUMBER as string),
-            unit as "seconds"
-          )
+          .add(+(process.env.TOKEN_EXPIRE_NUMBER as string), unit as "seconds")
           .unix();
       }
 
