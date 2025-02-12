@@ -27,11 +27,11 @@ declare global {
     interface IRequest {
         url: string;
         method: string;
-        body?: { [key: string]: any };
-        queryParams?: any;
+        body?: string;
+        queryParams?: string | number;
         useCredentials?: boolean;
-        headers?: any;
-        nextOption?: any;
+        headers?: Headers;
+        nextOption?: { [key: string]: string | number };
     }
 
     interface IBackendRes<T> {

@@ -18,7 +18,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Container } from "@mui/system";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
@@ -60,7 +60,7 @@ export default function AppHeader() {
 
   const handleLogout = () => {
     handleMenuClose();
-    router.push('/api/auth/signout')
+    router.push("/api/auth/signout");
   };
 
   const menuId = "primary-search-account-menu";

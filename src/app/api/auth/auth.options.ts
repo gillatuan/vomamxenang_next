@@ -1,13 +1,12 @@
 import { LOGIN_MUTATION } from "@/graphql/mutations";
 import client from "@/lib/apollo.client";
-import { sendRequest } from "@/utils/api";
-import dayjs from "dayjs";
+import dayjs, { ManipulateType } from "dayjs";
 import { AuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 
-async function refreshAccessToken(token: JWT) {
+/* async function refreshAccessToken(token: JWT) {
   const res = await sendRequest<IBackendRes<JWT>>({
     url: `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}/api/v1/auth/refresh`,
     method: "POST",
@@ -15,6 +14,7 @@ async function refreshAccessToken(token: JWT) {
   });
 
   if (res.data) {
+    const unit: string | undefined = process.env.TOKEN_EXPIRE_UNIT;
     return {
       ...token,
       access_token: res.data?.access_token ?? "",
@@ -22,7 +22,7 @@ async function refreshAccessToken(token: JWT) {
       access_expire: dayjs(new Date())
         .add(
           +(process.env.TOKEN_EXPIRE_NUMBER as string),
-          process.env.TOKEN_EXPIRE_UNIT as any
+          unit as "seconds"
         )
         .unix(),
       error: "",
@@ -34,7 +34,7 @@ async function refreshAccessToken(token: JWT) {
       error: "RefreshAccessTokenError", // This is used in the front-end, and if present, we can force a re-login, or similar
     };
   }
-}
+} */
 
 export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -64,8 +64,7 @@ export const authOptions: AuthOptions = {
           placeholder: "your password",
         },
       },
-      async authorize(credentials, req) {
-        try {
+      async authorize(credentials) {
           const { data, errors } = await client.mutate({
             mutation: LOGIN_MUTATION,
             variables: {
@@ -79,11 +78,10 @@ export const authOptions: AuthOptions = {
           if (data.login) {
             return data.login;
           }
-          return null;
-        } catch (error: any) {
-          console.error("GraphQL Login Error:", error);
-          throw new Error(error.message as string)
-        }
+
+          if (errors) {
+            throw new Error(errors[0].message as string)
+          }
       },
     }),
     GithubProvider({
@@ -92,14 +90,17 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile, trigger }) {
+    async jwt({ token, user, account, trigger }) {
+      // token, user, account, profile, trigger
+      const unit: string | undefined = process.env.TOKEN_EXPIRE_UNIT;
       if (trigger === "signIn" && account?.provider !== "credentials") {
+        /* TODO need to update with grapql
         const res = await sendRequest<IBackendRes<JWT>>({
           url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
           method: "POST",
           body: {
-            type: account?.provider?.toLocaleUpperCase(),
-            username: user.email,
+            type: account?.provider?.toLocaleUpperCase() ?? "",
+            username: user.email ?? "",
           },
         });
         if (res.data) {
@@ -109,10 +110,10 @@ export const authOptions: AuthOptions = {
           token.access_expire = dayjs(new Date())
             .add(
               +(process.env.TOKEN_EXPIRE_NUMBER as string),
-              process.env.TOKEN_EXPIRE_UNIT as any
+              unit as "seconds"
             )
             .unix();
-        }
+        } */
       }
 
       if (trigger === "signIn" && account?.provider === "credentials") {
@@ -122,7 +123,7 @@ export const authOptions: AuthOptions = {
         token.access_expire = dayjs(new Date())
           .add(
             +(process.env.TOKEN_EXPIRE_NUMBER as string),
-            process.env.TOKEN_EXPIRE_UNIT as any
+            unit as "seconds"
           )
           .unix();
       }
@@ -132,12 +133,14 @@ export const authOptions: AuthOptions = {
       );
 
       if (isTimeAfter) {
-        return refreshAccessToken(token);
+        // TODO need to update with grapql
+        // return refreshAccessToken(token);
       }
 
       return token;
     },
-    session({ session, token, user }) {
+    session({ session, token }) {
+      // session, token, user
       if (token) {
         session.access_token = token.access_token;
         session.refresh_token = token.refresh_token;
