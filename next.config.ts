@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
       transform: '@mui/icons-material/{{member}}',
     },
   },
-  output: "export",
   images: {
     remotePatterns: [
       {
