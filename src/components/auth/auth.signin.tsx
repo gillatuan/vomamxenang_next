@@ -188,9 +188,7 @@ const AuthSignIn = () => {
                   cursor: "pointer",
                   bgcolor: "orange",
                 }}
-                onClick={() => {
-                  signIn("github");
-                }}
+                onClick={() => signIn("github")}
               >
                 <GitHubIcon titleAccess="Login with Github" />
               </Avatar>
@@ -200,9 +198,7 @@ const AuthSignIn = () => {
                   cursor: "pointer",
                   bgcolor: "orange",
                 }}
-                onClick={() => {
-                  signIn("google");
-                }}
+                onClick={() => signIn("google")}
               >
                 <GoogleIcon titleAccess="Login with Google" />
               </Avatar>

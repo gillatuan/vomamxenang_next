@@ -55,12 +55,10 @@ export const authOptions: AuthOptions = {
         username: {
           label: "Email",
           type: "text",
-          placeholder: "vomamxenang@gmail.com",
         },
         password: {
           label: "Password",
           type: "password",
-          placeholder: "your password",
         },
       },
       async authorize(credentials) {
