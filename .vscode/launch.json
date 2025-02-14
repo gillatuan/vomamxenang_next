@@ -1,34 +1,20 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "node-terminal",
-      "request": "launch",
-      "name": "BE debug",
-      "command": "npm run dev",
-      "autoAttachChildProcesses": true,
-      "cwd": "${workspaceFolder}/../vomamxenang_next_nest/backend",
-      "sourceMapPathOverrides": {
-        "meteor://💻app/*": "${workspaceFolder}/*",
-        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
-        "webpack://?:*/*": "${workspaceFolder}/*"
-      }
-    },
-    {
-      "name": "FE debug ",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "npm run dev",
-      "cwd": "${workspaceFolder}/../vomamxenang_next_nest/frontend",
-      "pathMappings": [
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
         {
-          "url": "webpack://_N_E",
-          "path": "${workspaceFolder}/../vomamxenang_next_nest/frontend"
+            "name": "Next.js",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev",
+            "serverReadyAction": {
+                "pattern": "started server on .+, url: (https?://.+)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            },
+            "autoAttachChildProcesses": true,
         }
-      ]
-    },
-  ]
+    ]
 }
