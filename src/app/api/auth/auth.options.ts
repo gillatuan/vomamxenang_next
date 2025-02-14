@@ -1,13 +1,11 @@
 import { LOGIN_MUTATION } from "@/graphql/mutations";
 import client from "@/lib/apollo.client";
-import { sendRequest } from "@/utils/api";
 import dayjs from "dayjs";
 import { AuthOptions } from "next-auth";
-import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 
-async function refreshAccessToken(token: JWT) {
+/* async function refreshAccessToken(token: JWT) {
   const res = await sendRequest<IBackendRes<JWT>>({
     url: `${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}/api/v1/auth/refresh`,
     method: "POST",
@@ -35,7 +33,7 @@ async function refreshAccessToken(token: JWT) {
       error: "RefreshAccessTokenError", // This is used in the front-end, and if present, we can force a re-login, or similar
     };
   }
-}
+} */
 
 export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -57,12 +55,10 @@ export const authOptions: AuthOptions = {
         username: {
           label: "Email",
           type: "text",
-          placeholder: "vomamxenang@gmail.com",
         },
         password: {
           label: "Password",
           type: "password",
-          placeholder: "your password",
         },
       },
       async authorize(credentials) {
@@ -95,12 +91,13 @@ export const authOptions: AuthOptions = {
       // token, user, account, profile, trigger
       const unit: string | undefined = process.env.TOKEN_EXPIRE_UNIT;
       if (trigger === "signIn" && account?.provider !== "credentials") {
+        /* TODO need to update with grapql
         const res = await sendRequest<IBackendRes<JWT>>({
           url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
           method: "POST",
           body: {
-            type: account?.provider?.toLocaleUpperCase(),
-            username: user.email,
+            type: account?.provider?.toLocaleUpperCase() ?? "",
+            username: user.email ?? "",
           },
         });
         if (res.data) {
@@ -113,7 +110,7 @@ export const authOptions: AuthOptions = {
               unit as "seconds"
             )
             .unix();
-        }
+        } */
       }
 
       if (trigger === "signIn" && account?.provider === "credentials") {
@@ -121,10 +118,7 @@ export const authOptions: AuthOptions = {
         token.refresh_token = user.refresh_token;
         token.user = user.user;
         token.access_expire = dayjs(new Date())
-          .add(
-            +(process.env.TOKEN_EXPIRE_NUMBER as string),
-            unit as "seconds"
-          )
+          .add(+(process.env.TOKEN_EXPIRE_NUMBER as string), unit as "seconds")
           .unix();
       }
 
@@ -133,7 +127,8 @@ export const authOptions: AuthOptions = {
       );
 
       if (isTimeAfter) {
-        return refreshAccessToken(token);
+        // TODO need to update with grapql
+        // return refreshAccessToken(token);
       }
 
       return token;

@@ -11,3 +11,15 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `;
+
+export const REFRESH_TOKEN_MUTATION = gql`
+  mutation Login($loginInput: LoginInput!) {
+    login(loginInput: $loginInput) {
+      accessToken
+      user {
+        email
+        role
+      }
+    }
+  }
+`;
