@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     serverMinification: false
   },
+  output: "standalone",
   swcMinify: true,
   modularizeImports: {
     '@mui/icons-material': {
